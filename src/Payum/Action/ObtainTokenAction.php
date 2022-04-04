@@ -13,6 +13,7 @@ use Payum\Core\Reply\HttpResponse;
 use Payum\Core\Request\Generic;
 use Payum\Core\Request\RenderTemplate;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\ClientFactory;
+use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Instrument;
 use Sherlockode\SyliusCheckoutPlugin\Form\Type\ObtainTokenType;
 use Sherlockode\SyliusCheckoutPlugin\Payum\Request\ObtainToken;
 use Sylius\Component\Core\Model\PaymentInterface;
@@ -86,14 +87,22 @@ class ObtainTokenAction implements ActionInterface, GatewayAwareInterface, ApiAw
         $form->handleRequest($sfRequest);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $details['checkout'] = [
-                'token' => $form->get('token')->getData(),
-                'instrument' => $form->has('instrument') ? $form->get('instrument')->getData() : null,
-                'persist_instrument' => $form->has('rememberCard') ? $form->get('rememberCard')->getData() : false,
-            ];
-            $payment->setDetails($details);
+            $instrument = $form->has('instrument') ? $form->get('instrument')->getData() : null;
+            if (is_object($instrument) && is_a($instrument, Instrument::class)) {
+                $instrument = $instrument->getId();
+            }
+            $token = $form->get('token')->getData();
 
-            return;
+            if (!empty($token) || !empty($instrument)) {
+                $details['checkout'] = [
+                    'token' => $token,
+                    'instrument' => $instrument,
+                    'persist_instrument' => $form->has('rememberCard') ? $form->get('rememberCard')->getData() : false,
+                ];
+                $payment->setDetails($details);
+
+                return;
+            }
         }
 
         $renderTemplate = new RenderTemplate('@SherlockodeSyliusCheckoutPlugin/Action/obtain_token.html.twig', [
