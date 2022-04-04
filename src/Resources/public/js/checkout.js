@@ -17,7 +17,6 @@ class Checkout
         form.addEventListener("submit", function (event) {
             let existingCardInput = form.querySelector(existingCardInputSelector + ':checked');
             if (existingCardInput) {
-                tokenInput.value = existingCardInput.value;
                 form.submit();
             }
 
