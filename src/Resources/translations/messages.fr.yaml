@@ -1,0 +1,10 @@
+sherlockode:
+    checkout:
+        label: Checkout.com
+        public_key: Clé publique
+        secret_key: Clé secrète
+        enable_for_production: Activer le mode "production"
+        remember_card: Sauvegarder mes informations de paiement pour une prochaine commande
+        use_an_existing_card: Utiliser une carte existante
+        pay_order: Payer ma commande
+        pay: Payer

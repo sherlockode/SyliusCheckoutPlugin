@@ -1,0 +1,16 @@
+{{ form_start(form, {'attr': {'class': 'checkout-payment-form'}}) }}
+    <h1>{{ 'sherlockode.checkout.pay_order'|trans }}</h1>
+    {% if form.instrument is defined %}
+        <div class="existing-card">
+            {{ form_row(form.instrument) }}
+        </div>
+    {% endif %}
+    <div class="card-number-frame"></div>
+    <div class="expiry-date-frame"></div>
+    <div class="cvv-frame"></div>
+    {% if form.rememberCard is defined %}
+        {{ form_row(form.rememberCard) }}
+    {% endif %}
+    {{ form_row(form.token) }}
+    <button type="submit">{{ 'sherlockode.checkout.pay'|trans }}</button>
+{{ form_end(form) }}

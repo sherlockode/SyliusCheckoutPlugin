@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service
+                id="sylius.plugin.checkout.gateway_factory_builder"
+                class="Payum\Core\Bridge\Symfony\Builder\GatewayFactoryBuilder"
+        >
+            <argument>Sherlockode\SyliusCheckoutPlugin\Payum\CheckoutGatewayFactory</argument>
+            <tag name="payum.gateway_factory_builder" factory="sylius.checkout" />
+        </service>
+
+        <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\CaptureAction" public="true">
+            <tag name="payum.action" factory="sylius.checkout" alias="payum.action.capture" />
+        </service>
+
+        <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\ConfirmAction" public="true">
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.checkout_client" />
+            <tag name="payum.action" factory="sylius.checkout" alias="payum.action.confirm" />
+        </service>
+
+        <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\CreateChargeAction" public="true">
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.checkout_client" />
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.charge" />
+            <tag name="payum.action" factory="sylius.checkout" alias="payum.action.create_charge" />
+        </service>
+
+        <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\ObtainTokenAction" public="true">
+            <argument type="service" id="form.factory" />
+            <argument type="service" id="request_stack" />
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.checkout_client" />
+            <tag name="payum.action" factory="sylius.checkout" alias="payum.action.obtain_token" />
+        </service>
+
+        <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\PersistCustomerAction" public="true">
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.checkout_client" />
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.customer" />
+            <tag name="payum.action" factory="sylius.checkout" alias="payum.action.persist_customer" />
+        </service>
+
+        <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\PersistInstrumentAction" public="true">
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.checkout_client" />
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.instrument" />
+            <tag name="payum.action" factory="sylius.checkout" alias="payum.action.persist_instrument" />
+        </service>
+
+        <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\StatusAction" public="true">
+            <tag name="payum.action" factory="sylius.checkout" alias="payum.action.status" />
+        </service>
+    </services>
+</container>
