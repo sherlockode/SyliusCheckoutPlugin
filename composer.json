@@ -1,0 +1,25 @@
+{
+    "name": "sherlockode/sylius-checkout-plugin",
+    "type": "sylius-plugin",
+    "description": "Sylius plugin for Checkout.com",
+    "keywords": [
+        "sylius",
+        "sylius-plugin",
+        "checkout",
+        "payment"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^7.3",
+        "checkout/checkout-sdk-php": "^2.0",
+        "sylius/sylius": "~1.10.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "autoload": {
+        "psr-4": {
+            "Sherlockode\\SyliusCheckoutPlugin\\": "src/"
+        }
+    }
+}

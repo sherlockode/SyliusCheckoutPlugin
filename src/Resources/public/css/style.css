@@ -1,0 +1,36 @@
+.checkout-payment-form {
+    width: 600px;
+    margin: 40px auto;
+}
+
+.checkout-payment-form .card-number-frame,
+.checkout-payment-form .expiry-date-frame,
+.checkout-payment-form .cvv-frame {
+    height: 40px;
+    margin-bottom: 20px;
+}
+
+.checkout-payment-form .existing-card > div > label {
+    font-weight: bold;
+    margin-bottom: 20px;
+    display: block;
+}
+
+.checkout-payment-form .existing-card div {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.checkout-payment-form button[type="submit"] {
+    display: block;
+    height: 40px;
+    width: 100%;
+    cursor: pointer;
+    margin-top: 20px;
+    background: #697887;
+    border: solid 1px #697887;
+    border-radius: 3px;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: bold;
+}
