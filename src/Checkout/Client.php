@@ -14,6 +14,7 @@ use Checkout\Payments\Four\Request\PaymentRequest;
 use Checkout\Payments\Four\Request\Source\RequestIdSource;
 use Checkout\Payments\Four\Request\Source\RequestTokenSource;
 use Checkout\Payments\RefundRequest;
+use Checkout\Payments\ThreeDsRequest;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Charge;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Customer;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Instrument;
@@ -84,6 +85,7 @@ class Client
         $request->capture = $charge->isCapture();
         $request->success_url = $charge->getSuccessUrl();
         $request->failure_url = $charge->getFailureUrl();
+        $request->three_ds = new ThreeDsRequest();
 
         try {
             $payment = $this->getClient()->getPaymentsClient()->requestPayment($request);
