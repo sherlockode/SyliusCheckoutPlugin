@@ -26,7 +26,8 @@ class CheckoutGatewayFactory extends GatewayFactory
             return new CheckoutApi(
                 $config['public_key'],
                 $config['secret_key'],
-                (bool)$config['production']
+                (bool)$config['production'],
+                $config['webhook_signature']
             );
         };
 

@@ -6,5 +6,10 @@
             <argument type="service" id="payum" />
             <tag name="controller.service_arguments" />
         </service>
+        <service id="Sherlockode\SyliusCheckoutPlugin\Controller\WebhookController">
+            <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="sylius.repository.order" />
+            <tag name="controller.service_arguments" />
+        </service>
     </services>
 </container>

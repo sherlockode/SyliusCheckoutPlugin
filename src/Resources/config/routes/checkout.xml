@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+    <route id="checkout_capture_success" path="/checkoutpsp/payment/success/{payum_token}">
+        <default key="_controller">Sherlockode\SyliusCheckoutPlugin\Controller\CheckoutController::successAction</default>
+    </route>
+
+    <route id="checkout_capture_failure" path="/checkoutpsp/payment/failure/{payum_token}">
+        <default key="_controller">Sherlockode\SyliusCheckoutPlugin\Controller\CheckoutController::failureAction</default>
+    </route>
+</routes>

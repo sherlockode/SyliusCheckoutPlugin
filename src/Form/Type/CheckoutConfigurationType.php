@@ -31,6 +31,10 @@ class CheckoutConfigurationType extends AbstractType
             ->add('production', CheckboxType::class, [
                 'label' => 'sherlockode.checkout.enable_for_production',
                 'required' => false,
+            ])
+            ->add('webhook_signature', TextType::class, [
+                'label' => 'sherlockode.checkout.webhook_signature',
+                'required' => false,
             ]);
     }
 }
