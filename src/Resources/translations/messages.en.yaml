@@ -8,3 +8,4 @@ sherlockode:
         use_an_existing_card: Use an existing card
         pay_order: Pay my order
         pay: Pay
+        webhook_signature: Webhooks authorization header Key

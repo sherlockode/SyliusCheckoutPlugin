@@ -20,17 +20,28 @@ class CheckoutApi
     private $production;
 
     /**
+     * @var string|null
+     */
+    private $webhookSignature;
+
+    /**
      * CheckoutApi constructor.
      *
-     * @param string $publicKey
-     * @param string $secretKey
-     * @param bool   $production
+     * @param string      $publicKey
+     * @param string      $secretKey
+     * @param bool        $production
+     * @param string|null $webhookSignature
      */
-    public function __construct(string $publicKey, string $secretKey, bool $production)
-    {
+    public function __construct(
+        string $publicKey,
+        string $secretKey,
+        bool $production,
+        ?string $webhookSignature = null
+    ) {
         $this->publicKey = $publicKey;
         $this->secretKey = $secretKey;
         $this->production = $production;
+        $this->webhookSignature = $webhookSignature;
     }
 
     /**
@@ -89,6 +100,26 @@ class CheckoutApi
     public function setProduction(?bool $production): self
     {
         $this->production = $production;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getWebhookSignature(): ?string
+    {
+        return $this->webhookSignature;
+    }
+
+    /**
+     * @param string|null $webhookSignature
+     *
+     * @return $this
+     */
+    public function setWebhookSignature(?string $webhookSignature): self
+    {
+        $this->webhookSignature = $webhookSignature;
 
         return $this;
     }
