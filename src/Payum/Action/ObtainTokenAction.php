@@ -93,11 +93,22 @@ class ObtainTokenAction implements ActionInterface, GatewayAwareInterface, ApiAw
             }
             $token = $form->get('token')->getData();
 
-            if (!empty($token) || !empty($instrument)) {
+            if (!empty($token)) {
                 $details['checkout'] = [
                     'token' => $token,
-                    'instrument' => $instrument,
+                    'instrument' => null,
                     'persist_instrument' => $form->has('rememberCard') ? $form->get('rememberCard')->getData() : false,
+                ];
+                $payment->setDetails($details);
+
+                return;
+            }
+
+            if (!empty($instrument)) {
+                $details['checkout'] = [
+                    'token' => null,
+                    'instrument' => $instrument,
+                    'persist_instrument' => false,
                 ];
                 $payment->setDetails($details);
 

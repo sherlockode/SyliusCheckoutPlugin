@@ -28,6 +28,7 @@ class Checkout
                     form.submit();
                 })
                 .catch(function (error) {
+                    form.submit();
                     if (debug) {
                         console.error(error);
                     }
