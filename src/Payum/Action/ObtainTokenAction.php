@@ -19,6 +19,7 @@ use Sherlockode\SyliusCheckoutPlugin\Payum\Request\ObtainToken;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ObtainTokenAction
@@ -124,7 +125,16 @@ class ObtainTokenAction implements ActionInterface, GatewayAwareInterface, ApiAw
         ]);
         $this->gateway->execute($renderTemplate);
 
-        throw new HttpResponse($renderTemplate->getResult());
+        throw new HttpResponse(
+            $renderTemplate->getResult(),
+            Response::HTTP_OK,
+            [
+                'Expires' => gmdate("D, d M Y H:i:s") . ' GMT',
+                'Last-Modified' => gmdate("D, d M Y H:i:s") . ' GMT',
+                'Cache-Control' => 'private, no-store, max-age=0, no-cache, must-revalidate',
+                'Pragma' => 'no-cache',
+            ]
+        );
     }
 
     /**

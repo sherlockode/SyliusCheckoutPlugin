@@ -11,6 +11,7 @@
         </service>
 
         <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\CaptureAction" public="true">
+            <argument type="service" id="router.default" />
             <tag name="payum.action" factory="sylius.checkout" alias="payum.action.capture" />
         </service>
 
