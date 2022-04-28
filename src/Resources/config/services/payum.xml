@@ -26,6 +26,11 @@
             <tag name="payum.action" factory="sylius.checkout" alias="payum.action.create_charge" />
         </service>
 
+        <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\DeclineAction" public="true">
+            <argument type="service" id="session" />
+            <tag name="payum.action" factory="sylius.checkout" alias="payum.action.decline" />
+        </service>
+
         <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\ObtainTokenAction" public="true">
             <argument type="service" id="form.factory" />
             <argument type="service" id="request_stack" />

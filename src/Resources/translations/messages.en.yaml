@@ -9,3 +9,4 @@ sherlockode:
         pay_order: Pay my order
         pay: Pay
         webhook_signature: Webhooks authorization header Key
+        retry_declined_payment: Allow user to retry after payment has been declined

@@ -25,23 +25,31 @@ class CheckoutApi
     private $webhookSignature;
 
     /**
+     * @var bool
+     */
+    private $retryDeclinedPayment;
+
+    /**
      * CheckoutApi constructor.
      *
      * @param string      $publicKey
      * @param string      $secretKey
      * @param bool        $production
      * @param string|null $webhookSignature
+     * @param bool        $retryDeclinedPayment
      */
     public function __construct(
         string $publicKey,
         string $secretKey,
         bool $production,
-        ?string $webhookSignature = null
+        ?string $webhookSignature = null,
+        bool $retryDeclinedPayment = false
     ) {
         $this->publicKey = $publicKey;
         $this->secretKey = $secretKey;
         $this->production = $production;
         $this->webhookSignature = $webhookSignature;
+        $this->retryDeclinedPayment = $retryDeclinedPayment;
     }
 
     /**
@@ -120,6 +128,26 @@ class CheckoutApi
     public function setWebhookSignature(?string $webhookSignature): self
     {
         $this->webhookSignature = $webhookSignature;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRetryDeclinedPayment(): bool
+    {
+        return $this->retryDeclinedPayment;
+    }
+
+    /**
+     * @param bool $retryDeclinedPayment
+     *
+     * @return $this
+     */
+    public function setRetryDeclinedPayment(bool $retryDeclinedPayment): self
+    {
+        $this->retryDeclinedPayment = $retryDeclinedPayment;
 
         return $this;
     }

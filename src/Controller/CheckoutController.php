@@ -5,6 +5,7 @@ namespace Sherlockode\SyliusCheckoutPlugin\Controller;
 use Payum\Core\Payum;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Charge;
 use Sherlockode\SyliusCheckoutPlugin\Payum\Request\Confirm;
+use Sherlockode\SyliusCheckoutPlugin\Payum\Request\Decline;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -69,18 +70,21 @@ class CheckoutController
         $identity = $token->getDetails();
         /** @var PaymentInterface $payment */
         $payment = $this->payum->getStorage($identity->getClass())->find($identity);
-        $details = $payment->getDetails();
 
-        $details['checkout']['state'] = Charge::STATE_DECLINED;
-        $payment->setDetails($details);
+        $gateway = $this->payum->getGateway('checkout');
+        $gateway->execute(new Decline($payment));
 
         $this->payum->getHttpRequestVerifier()->invalidate($token);
-        $afterPayToken = $this->payum->getTokenFactory()->createToken(
-            'checkout',
-            $payment,
-            'sylius_shop_order_after_pay'
-        );
+        $tokenFactory = $this->payum->getTokenFactory();
 
-        return new RedirectResponse($afterPayToken->getTargetUrl());
+        $details = $payment->getDetails();
+
+        if (isset($details['checkout']['state']) && Charge::STATE_DECLINED === $details['checkout']['state']) {
+            $nextToken = $tokenFactory->createToken('checkout', $payment, 'sylius_shop_order_after_pay');
+        } else {
+            $nextToken = $tokenFactory->createCaptureToken('checkout', $payment, 'sylius_shop_order_after_pay');
+        }
+
+        return new RedirectResponse($nextToken->getTargetUrl());
     }
 }

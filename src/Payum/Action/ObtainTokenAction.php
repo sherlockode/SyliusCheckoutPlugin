@@ -99,6 +99,7 @@ class ObtainTokenAction implements ActionInterface, GatewayAwareInterface, ApiAw
                     'token' => $token,
                     'instrument' => null,
                     'persist_instrument' => $form->has('rememberCard') ? $form->get('rememberCard')->getData() : false,
+                    'history' => $details['checkout']['history'] ?? [],
                 ];
                 $payment->setDetails($details);
 
@@ -110,6 +111,7 @@ class ObtainTokenAction implements ActionInterface, GatewayAwareInterface, ApiAw
                     'token' => null,
                     'instrument' => $instrument,
                     'persist_instrument' => false,
+                    'history' => $details['checkout']['history'] ?? [],
                 ];
                 $payment->setDetails($details);
 

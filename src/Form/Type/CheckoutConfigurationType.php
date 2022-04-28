@@ -35,6 +35,10 @@ class CheckoutConfigurationType extends AbstractType
             ->add('webhook_signature', TextType::class, [
                 'label' => 'sherlockode.checkout.webhook_signature',
                 'required' => false,
+            ])
+            ->add('retry_declined_payment', CheckboxType::class, [
+                'label' => 'sherlockode.checkout.retry_declined_payment',
+                'required' => false,
             ]);
     }
 }
