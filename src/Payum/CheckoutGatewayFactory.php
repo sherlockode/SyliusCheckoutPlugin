@@ -27,7 +27,8 @@ class CheckoutGatewayFactory extends GatewayFactory
                 $config['public_key'],
                 $config['secret_key'],
                 (bool)$config['production'],
-                $config['webhook_signature']
+                $config['webhook_signature'],
+                (bool)$config['retry_declined_payment']
             );
         };
 

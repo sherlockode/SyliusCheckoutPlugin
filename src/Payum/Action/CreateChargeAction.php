@@ -71,6 +71,7 @@ class CreateChargeAction implements ActionInterface, GatewayAwareInterface, ApiA
         $details['checkout'] = [
             'id' => $charge->getId(),
             'state' => $charge->getStatus(),
+            'history' => $details['checkout']['history'] ?? [],
         ];
         $payment->setDetails($details);
 
