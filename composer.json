@@ -10,7 +10,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^7.3",
+        "php": "^7.3 || ^8.0",
         "checkout/checkout-sdk-php": "2.0.0-beta6",
         "sylius/sylius": "~1.10.0"
     },
