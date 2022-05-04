@@ -59,7 +59,7 @@ class CreateChargeAction implements ActionInterface, GatewayAwareInterface, ApiA
         $payment = $request->getModel();
         $details = $payment->getDetails();
 
-        $client = $this->clientFactory->create($this->api);
+        $client = $this->clientFactory->createFromApiObject($this->api);
         $charge = $this->chargeFactory->create($payment);
 
         try {

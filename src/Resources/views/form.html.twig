@@ -1,0 +1,14 @@
+{% block _obtain_token_instrument_widget %}
+    {% for child in form %}
+        {{ form_row(child) }}
+    {% endfor %}
+{% endblock %}
+
+{% block _obtain_token_instrument_entry_row %}
+    <div>
+        {{ form_widget(form) }}
+        {{ form_label(form) }}
+        {{ form_errors(form) }}
+        <button type="button" data-remove-card="{{ path('checkout_remove_instrument', {id: form.vars.value}) }}">{{ 'sherlockode.checkout.remove_instrument'|trans }}</button>
+    </div>
+{% endblock %}

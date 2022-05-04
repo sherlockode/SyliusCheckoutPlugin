@@ -172,6 +172,20 @@ class Client
     /**
      * @param string $id
      *
+     * @throws CheckoutArgumentException
+     */
+    public function removeInstrument(string $id): void
+    {
+        try {
+            $this->getClient()->getInstrumentsClient()->delete($id);
+        } catch (CheckoutApiException $exception) {
+            return;
+        }
+    }
+
+    /**
+     * @param string $id
+     *
      * @return Customer
      *
      * @throws CheckoutArgumentException

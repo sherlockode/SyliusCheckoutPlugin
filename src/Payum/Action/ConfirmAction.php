@@ -49,7 +49,7 @@ class ConfirmAction implements ActionInterface, ApiAwareInterface
             throw new LogicException('Invalid Checkout ID.');
         }
 
-        $charge = $this->clientFactory->create($this->api)->getCharge($details['checkout']['id']);
+        $charge = $this->clientFactory->createFromApiObject($this->api)->getCharge($details['checkout']['id']);
 
         $details['checkout']['state'] = $charge ? $charge->getStatus() : Charge::STATE_DECLINED;
         $payment->setDetails($details);

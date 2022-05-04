@@ -26,7 +26,8 @@
                 '{{ publishable_key }}',
                 'input[data-contains-checkout-token="true"]',
                 'input[data-checkout-existing-card="true"]',
-                {% if debug %}true{% else %}false{% endif %}
+                {% if debug %}true{% else %}false{% endif %},
+                '{{ sylius.localeCode }}'
             );
         });
     </script>

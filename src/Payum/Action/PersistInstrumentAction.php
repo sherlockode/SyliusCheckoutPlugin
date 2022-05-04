@@ -65,7 +65,7 @@ class PersistInstrumentAction implements ActionInterface, GatewayAwareInterface,
         $this->gateway->execute($persistCustomer);
 
         $instrument = $this->instrumentFactory->create($payment);
-        $this->clientFactory->create($this->api)->createInstrument($instrument);
+        $this->clientFactory->createFromApiObject($this->api)->createInstrument($instrument);
 
         if ($instrument->getId()) {
             $details['checkout']['instrument'] = $instrument->getId();
