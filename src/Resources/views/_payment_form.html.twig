@@ -1,3 +1,5 @@
+{% form_theme form with ['@SherlockodeSyliusCheckoutPlugin/form.html.twig'] %}
+
 {{ form_start(form, {'attr': {'class': 'checkout-payment-form'}}) }}
     <h1>{{ 'sherlockode.checkout.pay_order'|trans }}</h1>
     {% if form.instrument is defined %}

@@ -4,7 +4,6 @@ namespace Sherlockode\SyliusCheckoutPlugin\Processor;
 
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\ClientFactory;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\RefundFactory;
-use Sherlockode\SyliusCheckoutPlugin\Payum\CheckoutApi;
 use Sylius\Bundle\PayumBundle\Model\GatewayConfigInterface;
 use Sylius\Component\Core\Model\PaymentInterface;
 use Sylius\Component\Core\Model\PaymentMethodInterface;
@@ -52,9 +51,6 @@ class RefundProcessor
             return;
         }
 
-        $config = $gatewayConfig->getConfig();
-        $api = new CheckoutApi($config['public_key'], $config['secret_key'], (bool)$config['production']);
-
         $details = $payment->getDetails();
 
         if (!isset($details['checkout']['id'])) {
@@ -62,7 +58,7 @@ class RefundProcessor
         }
 
         $refund = $this->refundFactory->create($payment);
-        $this->clientFactory->create($api)->refund($refund);
+        $this->clientFactory->createFromGatewayConfig($gatewayConfig)->refund($refund);
 
         if (!$refund->getId()) {
             throw new \Exception('Refund order failed');

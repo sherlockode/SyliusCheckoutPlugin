@@ -62,7 +62,7 @@ class PersistCustomerAction implements ActionInterface, GatewayAwareInterface, A
             return;
         }
 
-        $client = $this->clientFactory->create($this->api);
+        $client = $this->clientFactory->createFromApiObject($this->api);
         $customer = $client->getCustomer($payment->getOrder()->getCustomer()->getEmail());
 
         if (!$customer) {

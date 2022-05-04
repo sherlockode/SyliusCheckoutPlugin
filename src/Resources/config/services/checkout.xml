@@ -12,7 +12,9 @@
         <service
                 class="Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\ClientFactory"
                 id="sherlockode.sylius_checkout_plugin.factory.checkout_client"
-        />
+        >
+            <argument type="service" id="doctrine.orm.entity_manager" />
+        </service>
 
         <service
                 class="Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\CustomerFactory"
