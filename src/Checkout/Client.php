@@ -15,6 +15,7 @@ use Checkout\Payments\Four\Request\Source\RequestIdSource;
 use Checkout\Payments\Four\Request\Source\RequestTokenSource;
 use Checkout\Payments\RefundRequest;
 use Checkout\Payments\ThreeDsRequest;
+use Checkout\Workflows\Reflows\ReflowBySubjectsRequest;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Charge;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Customer;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Instrument;
@@ -235,6 +236,45 @@ class Client
         }
 
         $customer->setId($response['id']);
+    }
+
+    /**
+     * @param string $subjectId
+     *
+     * @return bool
+     *
+     * @throws CheckoutArgumentException
+     */
+    public function reflow(string $subjectId): bool
+    {
+        $request = new ReflowBySubjectsRequest();
+        $request->subjects = [$subjectId];
+
+        try {
+            $this->getClient()->getWorkflowsClient()->reflow($request);
+        } catch (CheckoutApiException $exception) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $subjectId
+     *
+     * @return array
+     *
+     * @throws CheckoutArgumentException
+     */
+    public function getEvents(string $subjectId): ?array
+    {
+        try {
+            $response = $this->getClient()->getWorkflowsClient()->getSubjectEvents($subjectId);
+        } catch (CheckoutApiException $exception) {
+            return null;
+        }
+
+        return $response['data'] ?? null;
     }
 
     /**
