@@ -3,6 +3,8 @@
 namespace Sherlockode\SyliusCheckoutPlugin\Controller;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\ClientFactory;
+use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Charge;
 use Sylius\Component\Core\Model\OrderInterface;
 use Sylius\Component\Core\OrderPaymentStates;
 use Sylius\Component\Order\Repository\OrderRepositoryInterface;
@@ -28,15 +30,25 @@ class WebhookController
     private $orderRepository;
 
     /**
+     * @var ClientFactory
+     */
+    private $clientFactory;
+
+    /**
      * WebhookController constructor.
      *
      * @param EntityManagerInterface   $em
      * @param OrderRepositoryInterface $orderRepository
+     * @param ClientFactory            $clientFactory
      */
-    public function __construct(EntityManagerInterface $em, OrderRepositoryInterface $orderRepository)
-    {
+    public function __construct(
+        EntityManagerInterface $em,
+        OrderRepositoryInterface $orderRepository,
+        ClientFactory $clientFactory
+    ) {
         $this->em = $em;
         $this->orderRepository = $orderRepository;
+        $this->clientFactory = $clientFactory;
     }
 
     /**
@@ -51,8 +63,9 @@ class WebhookController
 
         $this->verifyRequest($payment, $request);
 
-        $this->setPaymentStatus($payment, $payload);
-        $this->setOrderStatus($payment->getOrder(), $payload);
+        $charge = $this->getPaymentState($payment);
+        $this->setPaymentStatus($payment, $charge);
+        $this->setOrderStatus($payment->getOrder(), $charge);
 
         $this->em->flush();
 
@@ -76,6 +89,29 @@ class WebhookController
         ) {
             throw new AccessDeniedHttpException();
         }
+    }
+
+    /**
+     * @param PaymentInterface $payment
+     *
+     * @return Charge
+     */
+    private function getPaymentState(PaymentInterface $payment): Charge
+    {
+        $details = $payment->getDetails();
+
+        if (!isset($details['checkout']['id'])) {
+            throw new NotFoundHttpException();
+        }
+
+        $client = $this->clientFactory->create();
+        $charge = $client->getCharge($details['checkout']['id']);
+
+        if (!$charge) {
+            throw new NotFoundHttpException();
+        }
+
+        return $charge;
     }
 
     /**
@@ -116,61 +152,53 @@ class WebhookController
 
     /**
      * @param PaymentInterface $payment
-     * @param array            $payload
+     * @param Charge           $charge
      */
-    private function setPaymentStatus(PaymentInterface $payment, array $payload): void
+    private function setPaymentStatus(PaymentInterface $payment, Charge $charge): void
     {
-        if (!isset($payload['type'])) {
-            return;
-        }
-
         $states = [
-            'card_verification_declined' => PaymentInterface::STATE_FAILED,
-            'card_verified' => PaymentInterface::STATE_AUTHORIZED,
-            'payment_pending' => PaymentInterface::STATE_PROCESSING,
-            'payment_approved' => PaymentInterface::STATE_AUTHORIZED,
-            'payment_paid' => PaymentInterface::STATE_COMPLETED,
-            'payment_declined' => PaymentInterface::STATE_FAILED,
-            'payment_canceled' => PaymentInterface::STATE_CANCELLED,
-            'payment_expired' => PaymentInterface::STATE_FAILED,
-            'payment_capture_pending' => PaymentInterface::STATE_PROCESSING,
-            'payment_capture_declined' => PaymentInterface::STATE_FAILED,
-            'payment_captured' => PaymentInterface::STATE_COMPLETED,
-            'payment_voided' => PaymentInterface::STATE_CANCELLED,
+            'Pending' => PaymentInterface::STATE_PROCESSING,
+            'Authorized' => PaymentInterface::STATE_AUTHORIZED,
+            'Card Verified' => PaymentInterface::STATE_AUTHORIZED,
+            'Voided' => PaymentInterface::STATE_CANCELLED,
+            'Partially Captured' => PaymentInterface::STATE_PROCESSING,
+            'Captured' => PaymentInterface::STATE_COMPLETED,
+            'Partially Refunded' => PaymentInterface::STATE_REFUNDED,
+            'Refunded' => PaymentInterface::STATE_REFUNDED,
+            'Declined' => PaymentInterface::STATE_FAILED,
+            'Canceled' => PaymentInterface::STATE_CANCELLED,
+            'Expired' => PaymentInterface::STATE_FAILED,
+            'Paid' => PaymentInterface::STATE_COMPLETED,
         ];
 
-        if (isset($states[$payload['type']])) {
-            $payment->setState($states[$payload['type']]);
+        if (isset($states[$charge->getStatus()])) {
+            $payment->setState($states[$charge->getStatus()]);
         }
     }
 
     /**
      * @param OrderInterface $order
-     * @param array          $payload
+     * @param Charge         $charge
      */
-    private function setOrderStatus(OrderInterface $order, array $payload): void
+    private function setOrderStatus(OrderInterface $order, Charge $charge): void
     {
-        if (!isset($payload['type'])) {
-            return;
-        }
-
         $states = [
-            'card_verification_declined' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
-            'card_verified' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
-            'payment_pending' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
-            'payment_approved' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
-            'payment_paid' => OrderPaymentStates::STATE_PAID,
-            'payment_declined' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
-            'payment_canceled' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
-            'payment_expired' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
-            'payment_capture_pending' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
-            'payment_capture_declined' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
-            'payment_captured' => OrderPaymentStates::STATE_PAID,
-            'payment_voided' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
+            'Pending' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
+            'Authorized' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
+            'Card Verified' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
+            'Voided' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
+            'Partially Captured' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
+            'Captured' => OrderPaymentStates::STATE_PAID,
+            'Partially Refunded' => OrderPaymentStates::STATE_REFUNDED,
+            'Refunded' => OrderPaymentStates::STATE_REFUNDED,
+            'Declined' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
+            'Canceled' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
+            'Expired' => OrderPaymentStates::STATE_AWAITING_PAYMENT,
+            'Paid' => OrderPaymentStates::STATE_PAID,
         ];
 
-        if (isset($states[$payload['type']])) {
-            $order->setPaymentState($states[$payload['type']]);
+        if (isset($states[$charge->getStatus()])) {
+            $order->setPaymentState($states[$charge->getStatus()]);
         }
     }
 }
