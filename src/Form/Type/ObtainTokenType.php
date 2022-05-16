@@ -7,13 +7,32 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class ObtainTokenType
  */
 class ObtainTokenType extends AbstractType
 {
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
+    /**
+     * ObtainTokenType constructor.
+     *
+     * @param TranslatorInterface $translator
+     */
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     /**
      * @param FormBuilderInterface $builder
      * @param array                $options
@@ -61,6 +80,19 @@ class ObtainTokenType extends AbstractType
                 'placeholder' => false
             ]);
         }
+
+        $builder->addEventListener(FormEvents::SUBMIT, function (FormEvent $event) {
+            $form = $event->getForm();
+            $isEmpty = null === $form->get('token')->getData();
+
+            if ($isEmpty && $form->has('instrument')) {
+                $isEmpty = null === $form->get('instrument')->getData();
+            }
+
+            if ($isEmpty) {
+                $form->addError(new FormError($this->translator->trans('sherlockode.checkout.invalid_token')));
+            }
+        });
     }
 
     public function configureOptions(OptionsResolver $resolver)

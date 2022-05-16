@@ -6,5 +6,9 @@
             <tag name="sylius.gateway_configuration_type" type="sylius.checkout" label="sherlockode.checkout.label" />
             <tag name="form.type" />
         </service>
+        <service id="Sherlockode\SyliusCheckoutPlugin\Form\Type\ObtainTokenType">
+            <argument type="service" id="translator" />
+            <tag name="form.type" />
+        </service>
     </services>
 </container>

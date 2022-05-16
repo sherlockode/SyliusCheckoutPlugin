@@ -11,3 +11,4 @@ sherlockode:
         webhook_signature: Webhooks authorization header Key
         retry_declined_payment: Allow user to retry after payment has been declined
         remove_instrument: Remove this card
+        invalid_token: Invalid card number
