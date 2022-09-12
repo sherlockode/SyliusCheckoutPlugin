@@ -40,6 +40,11 @@ class Instrument
     private $last4;
 
     /**
+     * @var Address
+     */
+    private $address;
+
+    /**
      * @return string|null
      */
     public function getId(): ?string
@@ -175,6 +180,26 @@ class Instrument
     public function setLast4(string $last4): self
     {
         $this->last4 = $last4;
+
+        return $this;
+    }
+
+    /**
+     * @return Address|null
+     */
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address|null $address
+     *
+     * @return $this
+     */
+    public function setAddress(?Address $address): self
+    {
+        $this->address = $address;
 
         return $this;
     }

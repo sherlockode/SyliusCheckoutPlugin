@@ -82,6 +82,16 @@ class Charge
     private $customerEmail;
 
     /**
+     * @var Address
+     */
+    private $address;
+
+    /**
+     * @var string
+     */
+    private $paymentIpAddress;
+
+    /**
      * Charge constructor.
      */
     public function __construct()
@@ -365,6 +375,46 @@ class Charge
     public function setCustomerEmail(string $customerEmail): self
     {
         $this->customerEmail = $customerEmail;
+
+        return $this;
+    }
+
+    /**
+     * @return Address|null
+     */
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param Address|null $address
+     *
+     * @return $this
+     */
+    public function setAddress(?Address $address): self
+    {
+        $this->address = $address;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPaymentIpAddress(): ?string
+    {
+        return $this->paymentIpAddress;
+    }
+
+    /**
+     * @param string|null $paymentIpAddress
+     *
+     * @return $this
+     */
+    public function setPaymentIpAddress(?string $paymentIpAddress): self
+    {
+        $this->paymentIpAddress = $paymentIpAddress;
 
         return $this;
     }
