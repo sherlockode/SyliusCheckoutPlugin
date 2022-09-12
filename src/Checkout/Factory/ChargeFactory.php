@@ -17,13 +17,20 @@ class ChargeFactory
     private $payum;
 
     /**
+     * @var AddressFactory
+     */
+    private $addressFactory;
+
+    /**
      * ChargeFactory constructor.
      *
-     * @param Payum $payum
+     * @param Payum          $payum
+     * @param AddressFactory $addressFactory
      */
-    public function __construct(Payum $payum)
+    public function __construct(Payum $payum, AddressFactory $addressFactory)
     {
         $this->payum = $payum;
+        $this->addressFactory = $addressFactory;
     }
 
     /**
@@ -50,12 +57,15 @@ class ChargeFactory
         $charge->setCapture(true);
         $charge->setSuccessUrl($this->getTokenUrl($payment, 'checkout_capture_success'));
         $charge->setFailureUrl($this->getTokenUrl($payment, 'checkout_capture_failure'));
+        $charge->setPaymentIpAddress($order->getCustomerIp());
 
         if ($customer) {
             $charge->setCustomerId($customer->getId());
             $charge->setCustomerName($customer->getFullName());
             $charge->setCustomerEmail($customer->getEmail());
         }
+
+        $charge->setAddress($this->addressFactory->create($payment));
 
         return $charge;
     }

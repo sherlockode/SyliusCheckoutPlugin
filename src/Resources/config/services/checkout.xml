@@ -3,10 +3,16 @@
 <container xmlns="http://symfony.com/schema/dic/services" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
         <service
+                class="Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\AddressFactory"
+                id="sherlockode.sylius_checkout_plugin.factory.address"
+        />
+
+        <service
                 class="Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\ChargeFactory"
                 id="sherlockode.sylius_checkout_plugin.factory.charge"
         >
             <argument type="service" id="payum" />
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.address" />
         </service>
 
         <service
@@ -24,7 +30,9 @@
         <service
                 class="Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\InstrumentFactory"
                 id="sherlockode.sylius_checkout_plugin.factory.instrument"
-        />
+        >
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.address" />
+        </service>
 
         <service
                 class="Sherlockode\SyliusCheckoutPlugin\Checkout\Factory\RefundFactory"

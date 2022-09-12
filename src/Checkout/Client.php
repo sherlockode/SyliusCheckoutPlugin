@@ -5,6 +5,8 @@ namespace Sherlockode\SyliusCheckoutPlugin\Checkout;
 use Checkout\CheckoutApiException;
 use Checkout\CheckoutArgumentException;
 use Checkout\CheckoutFourSdk;
+use Checkout\Common\Address;
+use Checkout\Common\Four\AccountHolder;
 use Checkout\Customers\Four\CustomerRequest;
 use Checkout\Environment;
 use Checkout\Four\CheckoutApi;
@@ -70,6 +72,16 @@ class Client
         if ($charge->getToken()) {
             $source = new RequestTokenSource();
             $source->token = $charge->getToken();
+            $source->token = $charge->getToken();
+
+            if ($charge->getAddress()) {
+                $source->billing_address = new Address();
+                $source->billing_address->address_line1 = $charge->getAddress()->getStreet();
+                $source->billing_address->address_line2 = $charge->getAddress()->getComplement();
+                $source->billing_address->city = $charge->getAddress()->getCity();
+                $source->billing_address->zip = $charge->getAddress()->getZipCode();
+                $source->billing_address->country = $charge->getAddress()->getCountry();
+            }
         } elseif ($charge->getInstrument())  {
             $source = new RequestIdSource();
             $source->id = $charge->getInstrument();
@@ -87,6 +99,7 @@ class Client
         $request->success_url = $charge->getSuccessUrl();
         $request->failure_url = $charge->getFailureUrl();
         $request->three_ds = new ThreeDsRequest();
+        $request->payment_ip = $charge->getPaymentIpAddress();
 
         try {
             $payment = $this->getClient()->getPaymentsClient()->requestPayment($request);
@@ -158,6 +171,16 @@ class Client
         $request->type = 'token';
         $request->token = $instrument->getToken();
         $request->customer = $customer;
+
+        if ($instrument->getAddress()) {
+            $request->account_holder = new AccountHolder();
+            $request->account_holder->billing_address = new Address();
+            $request->account_holder->billing_address->address_line1 = $instrument->getAddress()->getStreet();
+            $request->account_holder->billing_address->address_line2 = $instrument->getAddress()->getComplement();
+            $request->account_holder->billing_address->city = $instrument->getAddress()->getCity();
+            $request->account_holder->billing_address->zip = $instrument->getAddress()->getZipCode();
+            $request->account_holder->billing_address->country = $instrument->getAddress()->getCountry();
+        }
 
         try {
             $response = $this->getClient()->getInstrumentsClient()->create($request);
