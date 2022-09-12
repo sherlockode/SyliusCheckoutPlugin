@@ -13,6 +13,7 @@
         </service>
         <service id="Sherlockode\SyliusCheckoutPlugin\Controller\WebhookController">
             <argument type="service" id="doctrine.orm.entity_manager" />
+            <argument type="service" id="SM\Factory\FactoryInterface" />
             <argument type="service" id="sylius.repository.order" />
             <argument type="service" id="sherlockode.sylius_checkout_plugin.factory.checkout_client" />
             <tag name="controller.service_arguments" />
