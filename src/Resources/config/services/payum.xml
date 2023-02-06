@@ -27,7 +27,9 @@
         </service>
 
         <service id="Sherlockode\SyliusCheckoutPlugin\Payum\Action\DeclineAction" public="true">
-            <argument type="service" id="session" />
+            <call method="setSession">
+                <argument type="service" id="request_stack"/>
+            </call>
             <tag name="payum.action" factory="sylius.checkout" alias="payum.action.decline" />
         </service>
 

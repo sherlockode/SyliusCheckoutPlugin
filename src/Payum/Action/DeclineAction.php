@@ -12,6 +12,7 @@ use Payum\Core\Request\Generic;
 use Sherlockode\SyliusCheckoutPlugin\Checkout\Model\Charge;
 use Sherlockode\SyliusCheckoutPlugin\Payum\Request\Decline;
 use Sylius\Component\Core\Model\PaymentInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
@@ -26,16 +27,6 @@ class DeclineAction implements ActionInterface, GatewayAwareInterface, ApiAwareI
      * @var SessionInterface
      */
     private $session;
-
-    /**
-     * DeclineAction constructor.
-     *
-     * @param SessionInterface $session
-     */
-    public function __construct(SessionInterface $session)
-    {
-        $this->session = $session;
-    }
 
     /**
      * @param Generic $request
@@ -77,5 +68,17 @@ class DeclineAction implements ActionInterface, GatewayAwareInterface, ApiAwareI
     public function supports($request): bool
     {
         return $request instanceof Decline && $request->getModel() instanceof PaymentInterface;
+    }
+
+    /**
+     * @param RequestStack $requestStack
+     *
+     * @return DeclineAction
+     */
+    public function setSession(RequestStack $requestStack): self
+    {
+        $this->session = $requestStack->getSession();
+
+        return $this;
     }
 }
