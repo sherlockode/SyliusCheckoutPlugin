@@ -7,5 +7,6 @@
         <import resource="services/form.xml"/>
         <import resource="services/payum.xml"/>
         <import resource="services/processor.xml"/>
+        <import resource="services/twig.xml"/>
     </imports>
 </container>
