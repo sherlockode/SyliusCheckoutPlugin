@@ -27,7 +27,7 @@
                 'input[data-contains-checkout-token="true"]',
                 'input[data-checkout-existing-card="true"]',
                 {% if debug %}true{% else %}false{% endif %},
-                '{{ sylius.localeCode }}'
+                '{{ sylius.localeCode|checkout_payment_locale }}'
             );
         });
     </script>
