@@ -1,20 +1,27 @@
-class Checkout
+export default class Checkout
 {
-    constructor(publicKey, tokenInputSelector, existingCardInputSelector, debug, locale) {
+    constructor() {
+        let form = document.querySelector('form[class="checkout-payment-form"]');
+
+        if (null === form) {
+            return;
+        }
+
+        let publicKey = form.getAttribute('data-public-key'),
+            locale = form.getAttribute('data-locale'),
+            tokenInput = form.querySelector('input[data-contains-checkout-token="true"]'),
+            existingCardInput = form.querySelector('input[data-checkout-existing-card="true"]'),
+            debug = false;
+
         Frames.init({
             publicKey: publicKey,
             debug: debug,
             localization: locale.toUpperCase().replace(/_/g, '-'),
         });
 
-        let tokenInput = document.querySelector(tokenInputSelector),
-            form = this.getClosest(document.querySelector(tokenInputSelector), 'form'),
-            removeCardButtons;
-
         form.addEventListener("submit", function (event) {
-            let existingCardInput = form.querySelector(existingCardInputSelector + ':checked');
-            if (existingCardInput) {
-                form.submit();
+            if (existingCardInput && existingCardInput.checked) {
+                return;
             }
 
             event.preventDefault();
@@ -32,7 +39,7 @@ class Checkout
                 });
         });
 
-        removeCardButtons = form.querySelectorAll('button[data-remove-card]');
+        let removeCardButtons = form.querySelectorAll('button[data-remove-card]');
 
         for (let i = 0; i < removeCardButtons.length; i++) {
             removeCardButtons[i].addEventListener('click', function (event) {

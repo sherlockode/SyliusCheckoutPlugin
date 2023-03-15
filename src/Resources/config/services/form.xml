@@ -8,6 +8,7 @@
         </service>
         <service id="Sherlockode\SyliusCheckoutPlugin\Form\Type\ObtainTokenType">
             <argument type="service" id="translator" />
+            <argument type="service" id="sherlockode.sylius_checkout_plugin.locale_provider" />
             <tag name="form.type" />
         </service>
     </services>
