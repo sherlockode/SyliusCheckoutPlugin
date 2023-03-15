@@ -6,29 +6,11 @@
 
 {% block payum_stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="/bundles/sherlockodesyliuscheckoutplugin/css/style.css"/>
+    {{ encore_entry_link_tags('sherlockode-checkout', null, 'shop') }}
 {% endblock %}
 
 {% block payum_javascripts %}
     {{ parent() }}
     <script src="https://cdn.checkout.com/js/framesv2.min.js"></script>
-    <script src="/bundles/sherlockodesyliuscheckoutplugin/js/checkout.js"></script>
-    <script>
-        function onDocumentReady(fn) {
-            if (document.readyState !== 'loading') {
-                fn();
-            } else {
-                document.addEventListener('DOMContentLoaded', fn);
-            }
-        }
-        onDocumentReady(function() {
-            new Checkout(
-                '{{ publishable_key }}',
-                'input[data-contains-checkout-token="true"]',
-                'input[data-checkout-existing-card="true"]',
-                {% if debug %}true{% else %}false{% endif %},
-                '{{ sylius.localeCode|checkout_payment_locale }}'
-            );
-        });
-    </script>
+    {{ encore_entry_script_tags('sherlockode-checkout', null, 'shop') }}
 {% endblock %}

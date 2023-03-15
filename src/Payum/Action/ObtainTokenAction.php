@@ -84,6 +84,7 @@ class ObtainTokenAction implements ActionInterface, GatewayAwareInterface, ApiAw
             'action' => $request->getToken() ? $request->getToken()->getTargetUrl() : null,
             'instruments' => $this->getInstrumentChoices($payment),
             'allow_persist_instrument' => $customer && $customer->getUser(),
+            'public_key' => $this->api->getPublicKey(),
         ]);
         $form->handleRequest($sfRequest);
 
@@ -120,7 +121,6 @@ class ObtainTokenAction implements ActionInterface, GatewayAwareInterface, ApiAw
         }
 
         $renderTemplate = new RenderTemplate('@SherlockodeSyliusCheckoutPlugin/Action/obtain_token.html.twig', [
-            'publishable_key' => $this->api->getPublicKey(),
             'form' => $form->createView(),
             'debug' => !$this->api->isProduction(),
             'order' => $payment->getOrder(),
@@ -163,7 +163,7 @@ class ObtainTokenAction implements ActionInterface, GatewayAwareInterface, ApiAw
         }
 
         $customer = $this->clientFactory
-            ->create($this->api)
+            ->create()
             ->getCustomer($payment->getOrder()->getCustomer()->getEmail());
 
         if (!$customer) {

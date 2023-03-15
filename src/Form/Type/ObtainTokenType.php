@@ -2,6 +2,8 @@
 
 namespace Sherlockode\SyliusCheckoutPlugin\Form\Type;
 
+use Sherlockode\SyliusCheckoutPlugin\Checkout\LocaleProvider;
+use Sylius\Component\Locale\Context\LocaleContextInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -10,6 +12,8 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
@@ -24,13 +28,31 @@ class ObtainTokenType extends AbstractType
     private $translator;
 
     /**
+     * @var LocaleProvider
+     */
+    private $localeProvider;
+
+    /**
      * ObtainTokenType constructor.
      *
      * @param TranslatorInterface $translator
+     * @param LocaleProvider      $localeProvider
      */
-    public function __construct(TranslatorInterface $translator)
+    public function __construct(TranslatorInterface $translator, LocaleProvider $localeProvider)
     {
         $this->translator = $translator;
+        $this->localeProvider = $localeProvider;
+    }
+
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $attributes = $view->vars['attr'];
+
+        $attributes['class'] = 'checkout-payment-form';
+        $attributes['data-public-key'] = $options['public_key'];
+        $attributes['data-locale'] = $this->localeProvider->getLocale();
+
+        $view->vars['attr'] = $attributes;
     }
 
     /**
@@ -97,6 +119,7 @@ class ObtainTokenType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
+        $resolver->setRequired(['public_key']);
         $resolver->setDefaults([
             'instruments' => [],
             'allow_persist_instrument' => true,
